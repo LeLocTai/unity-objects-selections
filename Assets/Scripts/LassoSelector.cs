@@ -5,8 +5,8 @@ namespace LeTai.Selections
 {
 public class LassoSelector : Selector
 {
-    List<Vector3> vertices = new List<Vector3>();
-    List<Line>    lines    = new List<Line>();
+    readonly List<Vector2> vertices = new List<Vector2>();
+    readonly List<Line>    lines    = new List<Line>();
 
     public List<Line> Lines
     {
@@ -22,7 +22,7 @@ public class LassoSelector : Selector
         }
     }
 
-    public void ExtendLasso(Vector3 newPoint)
+    public void ExtendLasso(Vector2 newPoint)
     {
         vertices.Add(newPoint);
     }
