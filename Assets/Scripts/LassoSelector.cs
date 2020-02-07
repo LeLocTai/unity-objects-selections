@@ -32,19 +32,20 @@ public class LassoSelector : Selector
         int selectedCount = 0;
         foreach (var selectable in selectables)
         {
+            int selectedVerticesCount = 0;
             foreach (var vertex in selectable.Vertices)
             {
-                if (!IsPointInLasso(projectToLasso.Invoke(vertex)))
+                if (IsPointInLasso(projectToLasso.Invoke(vertex)))
                 {
-                    goto nextSelectable;
+                    selectedVerticesCount++;
                 }
             }
+
+            if (selectedVerticesCount < selectable.Vertices.Length / 2f) continue;
 
             selectable.OnSelected();
             result.Add(selectable);
             selectedCount++;
-
-            nextSelectable: ;
         }
 
         return selectedCount;
