@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,30 +7,75 @@ namespace LeTai.Selections
 public class LassoSelector : Selector
 {
     readonly List<Vector2> vertices = new List<Vector2>();
-    readonly List<Line>    lines    = new List<Line>();
 
     public List<Vector2> Vertices => vertices;
-    public List<Line>    Lines    => lines;
+
+    readonly Func<Vector3, Vector2> projectToLasso;
+
+    public LassoSelector(Func<Vector3, Vector2> projectToLasso)
+    {
+        this.projectToLasso = projectToLasso;
+    }
 
     public void ExtendLasso(Vector2 newPoint)
     {
         Vertices.Add(newPoint);
-        if (Vertices.Count > 1)
-        {
-            int lastVertexIndex = Vertices.Count - 1;
-            lines.Add(new Line(Vertices[lastVertexIndex - 1], Vertices[lastVertexIndex]));
-        }
     }
 
     public void Reset()
     {
         Vertices.Clear();
-        lines.Clear();
     }
 
-    public override int GetSelected(ref List<Selectable> result)
+    public override int GetSelected(IEnumerable<ISelectable> selectables, ref List<ISelectable> result)
     {
-        return 0;
+        int selectedCount = 0;
+        foreach (var selectable in selectables)
+        {
+            foreach (var vertex in selectable.Vertices)
+            {
+                if (!IsPointInLasso(projectToLasso.Invoke(vertex)))
+                {
+                    goto nextSelectable;
+                }
+            }
+
+            selectable.OnSelected();
+            result.Add(selectable);
+            selectedCount++;
+
+            nextSelectable: ;
+        }
+
+        return selectedCount;
+    }
+
+    /// <summary>
+    /// https://stackoverflow.com/questions/217578/how-can-i-determine-whether-a-2d-point-is-within-a-polygon
+    /// </summary>
+    bool IsPointInLasso(Vector2 point)
+    {
+        int vCount = vertices.Count;
+        if (vertices.Count < 2) return point == vertices[0];
+
+        bool inside = false;
+        for (int i = 1, j = vCount - 1; i < vCount; j = i++)
+        {
+            var a = vertices[j];
+            var b = vertices[i];
+
+            inside ^= IsBetween(point.y, a.y, b.y) &&
+                      point.x < (a.x - b.x) * (point.y - b.y) / (a.y - b.y) + b.x;
+        }
+
+        return inside;
+    }
+
+    static bool IsBetween(float value, float a, float b)
+    {
+        bool aAbovePoint = a > value;
+        bool bAbovePoint = b > value;
+        return aAbovePoint != bAbovePoint;
     }
 }
 }

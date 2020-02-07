@@ -6,6 +6,6 @@ public abstract class Selector
 {
     SelectablesManager selectablesManager;
 
-    public abstract int GetSelected(ref List<Selectable> result);
+    public abstract int GetSelected(IEnumerable<ISelectable> selectables, ref List<ISelectable> result);
 }
 }
