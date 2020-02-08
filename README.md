@@ -4,6 +4,8 @@ Framework for implementing objects selection in Unity Engine.
 
 Tutorial coming soon™
 
+Note that the demo scene does not use instancing material currently. If you have bad GPU, it might be laggy because of that. 
+
 ## Implemented methods
 
 ### Lasso
