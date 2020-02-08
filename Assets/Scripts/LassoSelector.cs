@@ -10,13 +10,6 @@ public class LassoSelector : Selector
 
     public List<Vector2> Vertices => vertices;
 
-    readonly Func<Vector3, Vector2> projectToLasso;
-
-    public LassoSelector(Func<Vector3, Vector2> projectToLasso)
-    {
-        this.projectToLasso = projectToLasso;
-    }
-
     public void ExtendLasso(Vector2 newPoint)
     {
         Vertices.Add(newPoint);
@@ -33,15 +26,15 @@ public class LassoSelector : Selector
         foreach (var selectable in selectables)
         {
             int selectedVerticesCount = 0;
-            foreach (var vertex in selectable.Vertices)
+            foreach (var vertex in selectable.VerticesScreenSpace)
             {
-                if (IsPointInLasso(projectToLasso.Invoke(vertex)))
+                if (IsPointInLasso(vertex))
                 {
                     selectedVerticesCount++;
                 }
             }
 
-            if (selectedVerticesCount < selectable.Vertices.Length / 2f) continue;
+            if (selectedVerticesCount < selectable.VerticesScreenSpace.Length / 2f) continue;
 
             selectable.OnSelected();
             result.Add(selectable);

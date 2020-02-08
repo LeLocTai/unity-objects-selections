@@ -20,7 +20,7 @@ public class UGUILassoSelector : MonoBehaviour, IDragHandler, IEndDragHandler, I
     void Start()
     {
         rendererCamera = rendererCamera ? rendererCamera : Camera.main;
-        lassoSelector  = new LassoSelector(ProjectToLasso);
+        lassoSelector  = new LassoSelector();
 
         lineRenderer.positionCount = 0;
     }
@@ -37,7 +37,7 @@ public class UGUILassoSelector : MonoBehaviour, IDragHandler, IEndDragHandler, I
 
         foreach (var selectables in selectablesManager.Selectables)
         {
-            foreach (var vertex in selectables.Vertices)
+            foreach (var vertex in selectables.VerticesScreenSpace)
             {
                 var posSS = ProjectToLasso(vertex);
                 GUI.Box(new Rect(posSS.x, Screen.height - posSS.y, 1, 1), GUIContent.none, style);

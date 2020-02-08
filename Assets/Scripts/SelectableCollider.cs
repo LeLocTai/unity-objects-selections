@@ -8,15 +8,18 @@ public class SelectableCollider : MonoBehaviour, ISelectable
     public Vector3   Center   => transform.position;
     public Vector3[] Vertices => vertices;
 
+    public Vector2[] VerticesScreenSpace => verticesScreenSpace;
+
     public event Action selected;
     public event Action deselected;
 
     MeshCollider  meshCollider;
     BoxCollider[] boxColliders;
-    Vector3[]     vertices = new Vector3[0];
+    Vector3[]     vertices            = new Vector3[0];
+    Vector2[]     verticesScreenSpace = new Vector2[0];
 
 
-    void Start()
+    public void Init(SelectablesManager manager)
     {
         meshCollider = GetComponent<MeshCollider>();
         boxColliders = GetComponentsInChildren<BoxCollider>();
@@ -24,13 +27,20 @@ public class SelectableCollider : MonoBehaviour, ISelectable
         int meshColliderVerticesCount = meshCollider ? meshCollider.sharedMesh.vertexCount : 0;
         int boxColliderVerticesCount  = boxColliders.Length > 0 ? 8 * boxColliders.Length : 0;
 
-        vertices = new Vector3[meshColliderVerticesCount +
-                               boxColliderVerticesCount];
+        int vCount = meshColliderVerticesCount +
+                     boxColliderVerticesCount;
+        vertices            = new Vector3[vCount];
+        verticesScreenSpace = new Vector2[vCount];
 
         if (meshCollider)
             AddMeshColliderVertices(0);
         if (boxColliders.Length > 0)
             AddBoxColliderVertices(meshColliderVerticesCount);
+
+        for (var i = 0; i < vCount; i++)
+        {
+            verticesScreenSpace[i] = manager.WorldToScreenPoint(vertices[i]);
+        }
     }
 
     void AddMeshColliderVertices(int startOffset)
