@@ -82,7 +82,7 @@ public class UGUILassoSelector : MonoBehaviour, IDragHandler, IEndDragHandler, I
     {
         UnSelectAll();
         ExtendLasso(eventData.position);
-        lassoSelector.GetSelected(selectablesManager.Selectables, ref selected);
+        lassoSelector.GetSelected(selectablesManager.Selectables, selected);
     }
 
 

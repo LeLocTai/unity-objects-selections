@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -24,16 +21,20 @@ public class LassoSelector : Selector
         Vertices.Clear();
     }
 
-    public override int GetSelected(IEnumerable<ISelectable> selectables, ref List<ISelectable> result)
+    readonly ConcurrentBag<ISelectable> selectedBag = new ConcurrentBag<ISelectable>();
+
+    public override int GetSelected(IEnumerable<ISelectable> selectables, ICollection<ISelectable> result)
     {
-        var selectedBag = new ConcurrentBag<ISelectable>();
+        while (selectedBag.TryTake(out _)) { }
+
         Parallel.ForEach(
             selectables,
             selectable =>
             {
                 int selectedVerticesCount = 0;
-                foreach (var vertex in selectable.VerticesScreenSpace)
+                for (var i = 0; i < selectable.VerticesScreenSpace.Length; i++)
                 {
+                    var vertex = selectable.VerticesScreenSpace[i];
                     if (IsPointInLasso(vertex))
                     {
                         selectedVerticesCount++;
