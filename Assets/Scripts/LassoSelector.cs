@@ -54,24 +54,6 @@ public class LassoSelector : Selector
             selectedCount++;
         }
 
-//        foreach (var selectable in selectables)
-//        {
-//            int selectedVerticesCount = 0;
-//            foreach (var vertex in selectable.Vertices)
-//            {
-//                if (IsPointInLasso(projectToLasso.Invoke(vertex)))
-//                {
-//                    selectedVerticesCount++;
-//                }
-//            }
-//
-//            if (selectedVerticesCount < selectable.Vertices.Length / 2f) continue;
-//
-//            selectable.OnSelected();
-//            result.Add(selectable);
-//            selectedCount++;
-//        }
-
         return selectedCount;
     }
 
