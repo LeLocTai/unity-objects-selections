@@ -2,7 +2,15 @@
 
 Framework for implementing objects selection in Unity Engine.
 
-Currently only lasso selection is implemented.
+Tutorial coming soon™
+
+## Implemented methods
+
+### Lasso
+
+![](./lasso-demo.gif)
+
+Relatively optimized, with threading support. Scene in the gif above have 7700 selection points matched against a lasso with 100~200 vertices.
 
 ---
 
