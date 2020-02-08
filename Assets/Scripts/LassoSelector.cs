@@ -1,5 +1,9 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace LeTai.Selections
@@ -22,24 +26,51 @@ public class LassoSelector : Selector
 
     public override int GetSelected(IEnumerable<ISelectable> selectables, ref List<ISelectable> result)
     {
-        int selectedCount = 0;
-        foreach (var selectable in selectables)
-        {
-            int selectedVerticesCount = 0;
-            foreach (var vertex in selectable.VerticesScreenSpace)
+        var selectedBag = new ConcurrentBag<ISelectable>();
+        Parallel.ForEach(
+            selectables,
+            selectable =>
             {
-                if (IsPointInLasso(vertex))
+                int selectedVerticesCount = 0;
+                foreach (var vertex in selectable.VerticesScreenSpace)
                 {
-                    selectedVerticesCount++;
+                    if (IsPointInLasso(vertex))
+                    {
+                        selectedVerticesCount++;
+                    }
                 }
+
+                if (selectedVerticesCount < selectable.VerticesScreenSpace.Length / 2f) return;
+
+                selectedBag.Add(selectable);
             }
+        );
 
-            if (selectedVerticesCount < selectable.VerticesScreenSpace.Length / 2f) continue;
-
+        int selectedCount = 0;
+        foreach (var selectable in selectedBag)
+        {
             selectable.OnSelected();
             result.Add(selectable);
             selectedCount++;
         }
+
+//        foreach (var selectable in selectables)
+//        {
+//            int selectedVerticesCount = 0;
+//            foreach (var vertex in selectable.Vertices)
+//            {
+//                if (IsPointInLasso(projectToLasso.Invoke(vertex)))
+//                {
+//                    selectedVerticesCount++;
+//                }
+//            }
+//
+//            if (selectedVerticesCount < selectable.Vertices.Length / 2f) continue;
+//
+//            selectable.OnSelected();
+//            result.Add(selectable);
+//            selectedCount++;
+//        }
 
         return selectedCount;
     }
