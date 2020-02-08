@@ -57,7 +57,7 @@ public class UGUILassoSelector : MonoBehaviour, IDragHandler, IEndDragHandler, I
         if (lineRenderer)
         {
             var posWS = rendererCamera.ScreenToWorldPoint(new Vector3(position.x, position.y,
-                                                                      rendererCamera.nearClipPlane));
+                                                                      rendererCamera.nearClipPlane + 1e-3f));
             lineRenderer.SetPosition(lineRenderer.positionCount++, posWS);
         }
     }
