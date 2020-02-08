@@ -11,37 +11,61 @@ public class SelectableCollider : MonoBehaviour, ISelectable
     public event Action selected;
     public event Action deselected;
 
-    MeshCollider meshCollider;
-    BoxCollider  boxCollider;
-    Vector3[]    vertices = new Vector3[0];
+    MeshCollider  meshCollider;
+    BoxCollider[] boxColliders;
+    Vector3[]     vertices = new Vector3[0];
 
 
     void Start()
     {
         meshCollider = GetComponent<MeshCollider>();
-        boxCollider  = GetComponent<BoxCollider>();
+        boxColliders = GetComponentsInChildren<BoxCollider>();
 
         int meshColliderVerticesCount = meshCollider ? meshCollider.sharedMesh.vertexCount : 0;
-        int boxColliderVerticesCount  = boxCollider ? 8 : 0;
+        int boxColliderVerticesCount  = boxColliders.Length > 0 ? 8 * boxColliders.Length : 0;
 
         vertices = new Vector3[meshColliderVerticesCount +
                                boxColliderVerticesCount];
 
-        AddMeshColliderVertices(0);
-        AddBoxColliderVertices(meshColliderVerticesCount);
+        if (meshCollider)
+            AddMeshColliderVertices(0);
+        if (boxColliders.Length > 0)
+            AddBoxColliderVertices(meshColliderVerticesCount);
     }
 
-    void AddMeshColliderVertices(int offset)
+    void AddMeshColliderVertices(int startOffset)
     {
         for (var i = 0; i < meshCollider.sharedMesh.vertices.Length; i++)
         {
-            vertices[i + offset] = transform.TransformPoint(meshCollider.sharedMesh.vertices[i]);
+            vertices[startOffset + i] = transform.TransformPoint(meshCollider.sharedMesh.vertices[i]);
         }
     }
 
-    void AddBoxColliderVertices(int offset)
+    static readonly Vector3[] BOX_VERTICES_OFFSET = {
+        new Vector3(-.5f, -.5f, .5f),
+        new Vector3(.5f,  -.5f, .5f),
+        new Vector3(-.5f, -.5f, -.5f),
+        new Vector3(.5f,  -.5f, -.5f),
+        new Vector3(-.5f, .5f,  .5f),
+        new Vector3(.5f,  .5f,  .5f),
+        new Vector3(-.5f, .5f,  -.5f),
+        new Vector3(.5f,  .5f,  -.5f)
+    };
+
+    void AddBoxColliderVertices(int startOffset)
     {
-        //TODO
+        for (var colliderIndex = 0; colliderIndex < boxColliders.Length; colliderIndex++)
+        {
+            var theBox = boxColliders[colliderIndex];
+            for (var vOffsetIndex = 0; vOffsetIndex < BOX_VERTICES_OFFSET.Length; vOffsetIndex++)
+            {
+                var vOffset = theBox.size;
+                vOffset.Scale(BOX_VERTICES_OFFSET[vOffsetIndex]);
+                var vertexIndex = startOffset + colliderIndex * BOX_VERTICES_OFFSET.Length + vOffsetIndex;
+                vertices[vertexIndex] = theBox.center + vOffset;
+                vertices[vertexIndex] = theBox.transform.TransformPoint(vertices[vertexIndex]);
+            }
+        }
     }
 
     public void OnSelected()
