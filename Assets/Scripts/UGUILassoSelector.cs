@@ -39,15 +39,9 @@ public class UGUILassoSelector : MonoBehaviour, IDragHandler, IEndDragHandler, I
         {
             foreach (var vertex in selectables.VerticesScreenSpace)
             {
-                var posSS = ProjectToLasso(vertex);
-                GUI.Box(new Rect(posSS.x, Screen.height - posSS.y, 1, 1), GUIContent.none, style);
+                GUI.Box(new Rect(vertex.x, Screen.height - vertex.y, 1, 1), GUIContent.none, style);
             }
         }
-    }
-
-    Vector2 ProjectToLasso(Vector3 posWS)
-    {
-        return rendererCamera.WorldToScreenPoint(posWS);
     }
 
     void ExtendLasso(Vector2 position)
