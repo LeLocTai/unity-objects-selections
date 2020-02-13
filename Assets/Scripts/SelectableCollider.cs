@@ -1,14 +1,16 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace LeTai.Selections
 {
 public class SelectableCollider : MonoBehaviour, ISelectable
 {
-    public Vector3   Center   => transform.position;
-    public Vector3[] Vertices => vertices;
+    public Vector3              Center              => transform.position;
+    public IEnumerable<Vector3> Vertices            => vertices;
+    public IEnumerable<Vector2> VerticesScreenSpace => verticesScreenSpace;
 
-    public Vector2[] VerticesScreenSpace => verticesScreenSpace;
+    public int VerticesSelectedThreshold => vertices.Length / 2;
 
     public event Action selected;
     public event Action deselected;
@@ -19,7 +21,7 @@ public class SelectableCollider : MonoBehaviour, ISelectable
     Vector2[]     verticesScreenSpace = new Vector2[0];
 
 
-    public void Init(SelectablesManager manager)
+    public void Init(Func<Vector3, Vector2> worldToScreenPoint)
     {
         meshCollider = GetComponent<MeshCollider>();
         boxColliders = GetComponentsInChildren<BoxCollider>();
@@ -39,7 +41,7 @@ public class SelectableCollider : MonoBehaviour, ISelectable
 
         for (var i = 0; i < vCount; i++)
         {
-            verticesScreenSpace[i] = manager.WorldToScreenPoint(vertices[i]);
+            verticesScreenSpace[i] = worldToScreenPoint(vertices[i]);
         }
     }
 

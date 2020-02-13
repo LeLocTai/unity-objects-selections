@@ -23,7 +23,7 @@ public class LassoSelector : Selector
 
     readonly ConcurrentBag<ISelectable> selectedBag = new ConcurrentBag<ISelectable>();
 
-    public override int GetSelected(IEnumerable<ISelectable> selectables, ICollection<ISelectable> result)
+    public int GetSelected(IEnumerable<ISelectable> selectables, ICollection<ISelectable> result)
     {
         while (selectedBag.TryTake(out _)) { }
 
@@ -32,16 +32,12 @@ public class LassoSelector : Selector
             selectable =>
             {
                 int selectedVerticesCount = 0;
-                for (var i = 0; i < selectable.VerticesScreenSpace.Length; i++)
+                foreach (var vertex in selectable.VerticesScreenSpace)
                 {
-                    var vertex = selectable.VerticesScreenSpace[i];
-                    if (IsPointInLasso(vertex))
-                    {
-                        selectedVerticesCount++;
-                    }
+                    if (IsPointInLasso(vertex)) selectedVerticesCount++;
                 }
 
-                if (selectedVerticesCount < selectable.VerticesScreenSpace.Length / 2f) return;
+                if (selectedVerticesCount < selectable.VerticesSelectedThreshold) return;
 
                 selectedBag.Add(selectable);
             }

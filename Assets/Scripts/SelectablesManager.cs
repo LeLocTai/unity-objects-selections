@@ -15,13 +15,15 @@ public class SelectablesManager : MonoBehaviour
 
     void Start()
     {
-        var selectable = FindObjectsOfType<SelectableCollider>();
-        for (var i = 0; i < selectable.Length; i++)
+        var selectableColliders = FindObjectsOfType<SelectableCollider>();
+
+        Func<Vector3, Vector2> worldToScreenPointDelegate = WorldToScreenPoint;
+        foreach (var selectableCollider in selectableColliders)
         {
-            selectable[i].Init(this);
+            selectableCollider.Init(worldToScreenPointDelegate);
         }
 
-        selectables.AddRange(selectable);
+        selectables.AddRange(selectableColliders);
     }
 
     public Vector2 WorldToScreenPoint(Vector3 point)

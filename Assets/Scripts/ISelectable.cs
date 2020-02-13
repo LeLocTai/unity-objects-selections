@@ -1,16 +1,16 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace LeTai.Selections
 {
 public interface ISelectable
 {
-    Vector3   Center              { get; }
-    Vector3[] Vertices            { get; }
-    Vector2[] VerticesScreenSpace { get; }
+    Vector3              Center              { get; }
+    IEnumerable<Vector3> Vertices            { get; }
+    IEnumerable<Vector2> VerticesScreenSpace { get; }
 
-    event Action selected;
-    event Action deselected;
+    int VerticesSelectedThreshold { get; }
 
     void OnSelected();
     void OnDeselected();

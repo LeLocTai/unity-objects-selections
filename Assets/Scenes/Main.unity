@@ -34255,8 +34255,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selectablesManager: {fileID: 1158888848}
+  rendererCamera: {fileID: 534669904}
   lineRenderer: {fileID: 854282600}
-  rendererCamera: {fileID: 0}
   debug: 0
 --- !u!114 &1961324517
 MonoBehaviour:

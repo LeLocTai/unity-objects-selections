@@ -8,10 +8,11 @@ namespace LeTai.Selections
 {
 public class UGUILassoSelector : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHandler
 {
-    public SelectablesManager selectablesManager;
-    public LineRenderer       lineRenderer;
-    public Camera             rendererCamera;
-    public bool               debug;
+    [SerializeField] SelectablesManager selectablesManager;
+    [SerializeField] Camera             rendererCamera;
+    [SerializeField] LineRenderer       lineRenderer;
+
+    [SerializeField] bool debug;
 
     LassoSelector lassoSelector;
 
@@ -78,7 +79,6 @@ public class UGUILassoSelector : MonoBehaviour, IDragHandler, IEndDragHandler, I
         ExtendLasso(eventData.position);
         lassoSelector.GetSelected(selectablesManager.Selectables, selected);
     }
-
 
     public void OnEndDrag(PointerEventData eventData)
     {
