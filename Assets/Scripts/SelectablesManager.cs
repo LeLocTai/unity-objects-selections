@@ -10,25 +10,53 @@ public class SelectablesManager : MonoBehaviour
 
     public List<ISelectable> Selectables => selectables;
 
-    List<ISelectable> selectables = new List<ISelectable>();
+    List<ISelectable>      selectables = new List<ISelectable>();
+    Func<Vector3, Vector2> worldToScreenPointDelegate;
 
+    Vector3    lastCameraPosition;
+    Quaternion lastCameraRotation;
 
     void Start()
     {
         var selectableColliders = FindObjectsOfType<SelectableCollider>();
 
-        Func<Vector3, Vector2> worldToScreenPointDelegate = WorldToScreenPoint;
+        worldToScreenPointDelegate = worldPos => selectionCamera.WorldToScreenPoint(worldPos);
+
         foreach (var selectableCollider in selectableColliders)
         {
             selectableCollider.Init(worldToScreenPointDelegate);
         }
 
         selectables.AddRange(selectableColliders);
+
+        lastCameraPosition = selectionCamera.transform.position;
+        lastCameraRotation = selectionCamera.transform.rotation;
     }
 
-    public Vector2 WorldToScreenPoint(Vector3 point)
+    void LateUpdate()
     {
-        return selectionCamera.WorldToScreenPoint(point);
+        var cameraTransform = selectionCamera.transform;
+        bool changed = false;
+
+        if (cameraTransform.position != lastCameraPosition)
+        {
+            changed = true;
+            lastCameraPosition = cameraTransform.position;
+        }
+
+        if (cameraTransform.rotation != lastCameraRotation)
+        {
+            changed = true;
+            lastCameraRotation = cameraTransform.rotation;
+        }
+
+        if (changed)
+        {
+            foreach (var selectable in selectables)
+            {
+                selectable.InvalidateScreenPosition(worldToScreenPointDelegate);
+            }
+        }
     }
 }
 }

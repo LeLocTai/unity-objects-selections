@@ -39,10 +39,7 @@ public class SelectableCollider : MonoBehaviour, ISelectable
         if (boxColliders.Length > 0)
             AddBoxColliderVertices(meshColliderVerticesCount);
 
-        for (var i = 0; i < vCount; i++)
-        {
-            verticesScreenSpace[i] = worldToScreenPoint(vertices[i]);
-        }
+        InvalidateScreenPosition(worldToScreenPoint);
     }
 
     void AddMeshColliderVertices(int startOffset)
@@ -77,6 +74,14 @@ public class SelectableCollider : MonoBehaviour, ISelectable
                 vertices[vertexIndex] = theBox.center + vOffset;
                 vertices[vertexIndex] = theBox.transform.TransformPoint(vertices[vertexIndex]);
             }
+        }
+    }
+
+    public void InvalidateScreenPosition(Func<Vector3, Vector2> worldToScreenPoint)
+    {
+        for (var i = 0; i < verticesScreenSpace.Length; i++)
+        {
+            verticesScreenSpace[i] = worldToScreenPoint(vertices[i]);
         }
     }
 

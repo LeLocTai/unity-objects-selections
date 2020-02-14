@@ -12,6 +12,8 @@ public interface ISelectable
 
     int VerticesSelectedThreshold { get; }
 
+    void InvalidateScreenPosition(Func<Vector3, Vector2> worldToScreenPoint);
+
     void OnSelected();
     void OnDeselected();
 }
