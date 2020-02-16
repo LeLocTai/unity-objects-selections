@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace LeTai.Selections
 {
-public class LassoSelector : Selector
+public class LassoSelector : ISelector
 {
     readonly List<Vector2> vertices = new List<Vector2>();
 

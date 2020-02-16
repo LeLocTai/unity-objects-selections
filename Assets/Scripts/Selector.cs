@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace LeTai.Selections
 {
-public interface Selector
+public interface ISelector
 {
     int GetSelected(IEnumerable<ISelectable> selectables, ICollection<ISelectable> result);
 }
