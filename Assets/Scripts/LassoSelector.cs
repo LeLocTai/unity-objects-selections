@@ -68,7 +68,8 @@ public class LassoSelector : ISelector
             var a = vertices[j];
             var b = vertices[i];
 
-            bool intersectLeft = IsBetween(point.y, a.y, b.y) && point.x > IntersectionX(point, a, b);
+            bool intersectLeft = IsBetween(point.y, a.y, b.y) &&
+                                 LineSegmentIntersectionX(point.y, a, b) < point.x;
             inside ^= intersectLeft;
         }
 
@@ -80,9 +81,9 @@ public class LassoSelector : ISelector
         return a > value != b > value;
     }
 
-    static float IntersectionX(Vector2 point, Vector2 a, Vector2 b)
+    static float LineSegmentIntersectionX(float lineY, Vector2 a, Vector2 b)
     {
-        return (a.x - b.x) * (point.y - b.y) / (a.y - b.y) + b.x;
+        return (a.x - b.x) * (lineY - b.y) / (a.y - b.y) + b.x;
     }
 }
 }
