@@ -34,7 +34,8 @@ public class LassoSelector : ISelector
                 int selectedVerticesCount = 0;
                 foreach (var vertex in selectable.VerticesScreenSpace)
                 {
-                    if (IsPointInLasso(vertex)) selectedVerticesCount++;
+                    if (PointInPolygon.WindingNumber(vertex, vertices))
+                        selectedVerticesCount++;
                 }
 
                 if (selectedVerticesCount < selectable.VerticesSelectedThreshold) return;
@@ -52,38 +53,6 @@ public class LassoSelector : ISelector
         }
 
         return selectedCount;
-    }
-
-    /// <summary>
-    /// https://stackoverflow.com/questions/217578/how-can-i-determine-whether-a-2d-point-is-within-a-polygon
-    /// </summary>
-    bool IsPointInLasso(Vector2 point)
-    {
-        int vCount = vertices.Count;
-        if (vertices.Count < 2) return point == vertices[0];
-
-        bool inside = false;
-        for (int i = 1, j = vCount - 1; i < vCount; j = i++)
-        {
-            var a = vertices[j];
-            var b = vertices[i];
-
-            bool intersectLeft = IsBetween(point.y, a.y, b.y) &&
-                                 LineSegmentIntersectionX(point.y, a, b) < point.x;
-            inside ^= intersectLeft;
-        }
-
-        return inside;
-    }
-
-    static bool IsBetween(float value, float a, float b)
-    {
-        return a > value != b > value;
-    }
-
-    static float LineSegmentIntersectionX(float lineY, Vector2 a, Vector2 b)
-    {
-        return (a.x - b.x) * (lineY - b.y) / (a.y - b.y) + b.x;
     }
 }
 }

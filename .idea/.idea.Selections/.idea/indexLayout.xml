@@ -6,9 +6,12 @@
       <Path>Library/PackageCache/com.unity.ads@2.0.8</Path>
       <Path>Library/PackageCache/com.unity.analytics@3.2.2</Path>
       <Path>Library/PackageCache/com.unity.collab-proxy@1.2.15</Path>
+      <Path>Library/PackageCache/com.unity.ext.nunit@0.1.5-preview</Path>
       <Path>Library/PackageCache/com.unity.package-manager-ui@2.0.8</Path>
       <Path>Library/PackageCache/com.unity.purchasing@2.0.3</Path>
+      <Path>Library/PackageCache/com.unity.test-framework@0.0.4-preview</Path>
       <Path>Library/PackageCache/com.unity.textmeshpro@1.4.1</Path>
+      <Path>Library/PackageCache/nuget.mono-cecil@0.1.5-preview</Path>
       <Path>Packages</Path>
       <Path>ProjectSettings</Path>
     </explicitIncludes>
